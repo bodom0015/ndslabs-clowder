@@ -11,9 +11,6 @@
 # Exit on error?
 # set -e
 
-
-
-
 start_rc_wait ()
 {
  echo ""
@@ -46,9 +43,6 @@ start_rc_wait ()
 
  echo ""
 }
-
-
-
 
 # Create required services first
 # This will inject environment variables for each into any pods started after the service
