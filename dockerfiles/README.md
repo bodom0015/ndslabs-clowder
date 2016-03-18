@@ -34,4 +34,4 @@ make
 
 You should then see the necessary images being built for you!
 
-NOTE: plantcv can take upwards of ~25 minutes to fully build. Plan accodingly.
+NOTE: plantcv can take upwards of ~25 minutes to fully build. Plan accordingly.
