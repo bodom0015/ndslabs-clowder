@@ -24,7 +24,7 @@ These images should all be pushed to docker hub. Simply running the following co
 Running the start script will bring up clowder. Be sure to give it a space-separated list of plugins / extractors that you would like to bring up:
 ~~~
 cd services/ncsa/clowder/
-./start-clowder.sh <plugin1> <plugin2> ...
+./start-clowder.sh [plugin1] [plugin2] ...
 ~~~
 
 Accepted plugin values can be found below:
@@ -34,9 +34,6 @@ Accepted plugin values can be found below:
 * video-preview
 
 NOTE: Specifiying extractors automatically starts RabbitMQ. Otherwise, RabbitMQ will not be started.
-
-Optional arguments:
-* -w : wait for service dependencies before continuing startup
 
 # Stopping Clowder
 Simply run the stop script to stop clowder:
@@ -109,7 +106,7 @@ Print all enviornment variables present in the given container who shares the sa
 Now that you've seen the basic setup, let's try something a little more complex:
 
 * Stop any running Clowder / plugin instances: **. ./stop-clowder.sh -m**
-* Restart Clowder with some extractors: **. ./start-clowder.sh -w image-preview plantcv video-preview**
+* Restart Clowder with some extractors: **. ./start-clowder.sh image-preview plantcv video-preview**
   * The script should automatically start RabbitMQ for you as well, since you have specified that you would like to utilize extractors.
 * Wait for everything to finish starting everything up (this may take up to ~1 minute)
 * Once Clowder starts, verify that the extractors are present by navigating to **http://YOUR_OPENSTACK_IP:30291/api/status**
