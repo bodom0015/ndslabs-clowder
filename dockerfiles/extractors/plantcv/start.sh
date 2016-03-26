@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd $EXTRACTOR_HOME
 # If RabbitMQ URI is not set, use the default credentials; while doing so,
 # handle the linking scenario, where RABBITMQ_PORT_5672 is set.
 if [ "$RABBITMQ_URI" == "" ]; then
@@ -26,4 +25,5 @@ do
 done
 
 # start the extractor service
-source ${CLOWDER_HOME}/pyenv/bin/activate && ./ex-plantcv.py
+#source ${CLOWDER_HOME}/pyenv/bin/activate && ./ex-plantcv.py
+./ex-plantcv.py

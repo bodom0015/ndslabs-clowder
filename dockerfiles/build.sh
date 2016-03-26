@@ -26,10 +26,10 @@ docker tag ndslabs/toolserver:${TAG} ncsa/clowder-toolserver:latest
 
 if [[ "${@/-p/}" != "$@" ]]; then
 	for i in "${IMAGES[@]}"; do
-		docker push ndslabs/$i:${TAG}
+		echo docker push ndslabs/$i:${TAG}
 	done
 
 	for i in "${EXTRACTORS[@]}"; do
-		docker push ndslabs/$i:${TAG}
+		echo docker push ndslabs/$i:${TAG}
 	done
 fi
