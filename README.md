@@ -1,4 +1,4 @@
-# Clowder in NDSLabs
+# Clowder 0.9.2
 Resources to deploy Clowder in Kubernetes or [NDS Labs](https://github.com/nds-org/ndslabs).
 
 ## Dockerfiles
