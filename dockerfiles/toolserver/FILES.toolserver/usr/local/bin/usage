@@ -1,14 +1,14 @@
 #!/bin/bash
 
 usage-docker() {
-    echo -n 'docker run -d -p 8080:8080 --name toolserver -v /var/run/docker.sock:/var/run/docker.sock toolserver toolserver'
+    echo -n 'docker run -d -p 8082:8082 --name toolserver -v /var/run/docker.sock:/var/run/docker.sock ndslabs/toolserver:0.9.2 toolserver'
 }
 
 usage() {
     echo "This image generates the command to run itself using the following commands:"
-    echo '  docker run --rm -t toolserver usage docker'
+    echo '  docker run --rm -t ndslabs/toolserver:0.9.2 usage docker'
     echo '  To deploy in this environment:'
-    echo '      eval $(docker run --rm -it toolserver usage docker)'
+    echo '      eval $(docker run --rm -it ndslabs/toolserver:0.9.2 usage docker)'
 
 }
 
