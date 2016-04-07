@@ -1,6 +1,15 @@
 FROM ncsa/clowder-extractors-python-base
 MAINTAINER Yan Y. Liu <yanliu@illinois.edu>
 
+#TODO: change extractor home to plantcv after code merge
+ENV CLOWDER_HOME=/home/clowder \
+    EXTRACTOR_HOME=${CLOWDER_HOME}/extractors-plantcv/plantcv \
+    RABBITMQ_URI="" \
+    RABBITMQ_EXCHANGE="clowder" \
+    PYTHONPATH="${CLOWDER_HOME}/opencv/lib/python2.7/dist-packages:${CLOWDER_HOME}/plantcv/lib:/usr/lib/python2.7/dist-packages:${PYTHONPATH}" \
+    PATH="${CLOWDER_HOME}/opencv/bin:${PATH}" \
+    LD_LIBRARY_PATH="${CLOWDER_HOME}/opencv/lib:${LD_LIBRARY_PATH}"
+
 USER root
 
 ### plantcv part: start
@@ -34,6 +43,8 @@ RUN apt-get -qq update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ENV CLOWDER_HOME=/home/clowder
+
 # Install opencv from source
 RUN cd ${CLOWDER_HOME} && \
     mkdir software && \
@@ -54,16 +65,6 @@ RUN cd ${CLOWDER_HOME} && \
     git clone -q --depth=1 --single-branch https://github.com/danforthcenter/plantcv.git && \
     git clone -q --depth=1 --single-branch https://opensource.ncsa.illinois.edu/bitbucket/scm/cats/extractors-plantcv.git && \
     rm -rf plantcv/.git extractors-plantcv/.git /tmp/* /var/tmp/*
-
-
-#TODO: change extractor home to plantcv after code merge
-ENV CLOWDER_HOME=/home/clowder \
-    EXTRACTOR_HOME=/home/clowder/extractors-plantcv/plantcv \
-    RABBITMQ_URI="" \
-    RABBITMQ_EXCHANGE="clowder" \
-    PYTHONPATH="${CLOWDER_HOME}/opencv/lib/python2.7/dist-packages:${CLOWDER_HOME}/plantcv/lib:/usr/lib/python2.7/dist-packages:${PYTHONPATH}" \
-    PATH="${CLOWDER_HOME}/opencv/bin:${PATH}" \
-    LD_LIBRARY_PATH="${CLOWDER_HOME}/opencv/lib:${LD_LIBRARY_PATH}"
 
 # Add some sample test data
 ADD http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/NIR_SV_90_z2500_338998.jpg http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/VIS_SV_180_z700_379476.jpg http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/VIS_TV_z3000_329934.jpg ${CLOWDER_HOME}/data/Lemnatec-Indoor/
