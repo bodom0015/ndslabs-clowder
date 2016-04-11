@@ -5,7 +5,7 @@
 # Latest stable tag: 0.9.2
 
 IMAGES=(clowder toolserver)
-EXTRACTORS=(image-preview video-preview plantcv image-metadata audio-preview audio-speech2text pdf-preview)
+EXTRACTORS=(image/preview video-preview plantcv image/metadata audio/preview audio/speech2text pdf-preview)
 
 TAG=$1
 if [[ "$1" == "" ]]; then
