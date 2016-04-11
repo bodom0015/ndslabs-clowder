@@ -355,7 +355,7 @@ public class ExtractText {
 	// Set path to dictionary.
 	configuration.setDictionaryPath("resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict");
 	// Set language model.
-	configuration.setLanguageModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us.lm.dmp");
+	configuration.setLanguageModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin");
 
 //        configuration.setAcousticModelPath("resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz"); 
 //	  configuration.setAcousticModelPath("resource:/edu/cmu/sphinx/models/acoustic/wsj/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz");

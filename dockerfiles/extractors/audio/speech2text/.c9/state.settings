@@ -1,4 +1,15 @@
 {
+    "ace": {
+        "search": {
+            "@backwards": "false",
+            "@highlightmatches": "true",
+            "@matchcase": "false",
+            "@preservecase": "false",
+            "@regex": "false",
+            "@wholeword": "false",
+            "@wraparound": "true"
+        }
+    },
     "console": {
         "@expanded": false,
         "@height": "153",
@@ -145,6 +156,13 @@
             ]
         }
     },
+    "search-history": {
+        "search": {
+            "json()": [
+                "Config"
+            ]
+        }
+    },
     "tabs": {
         "json()": {
             "focus": "/src/main/java/edu/illinois/ncsa/medici/extractor/ExtractText.java",
@@ -236,7 +254,7 @@
                     "document": {
                         "changed": false,
                         "meta": {
-                            "timestamp": 1460154246012
+                            "timestamp": 1460406962000
                         },
                         "filter": true,
                         "title": "ExtractText.java",
@@ -251,9 +269,7 @@
                     "name": "tab5",
                     "path": "/config.properties",
                     "className": [
-                        "tab5",
-                        "changed",
-                        "conflict"
+                        "tab5"
                     ],
                     "document": {
                         "filter": true,
@@ -280,15 +296,15 @@
                                 "wrapToView": true
                             },
                             "firstLineState": {
-                                "row": 70,
+                                "row": 340,
                                 "mode": "ace/mode/properties"
                             }
                         },
-                        "hash": "104c90bc211d0c1f12f2e88e1b7e39483c3c67a8",
+                        "hash": "6dbce808f2e617f63589c056aa9364a8825a285a",
                         "meta": {
-                            "timestamp": 1460134104000
+                            "timestamp": 1460406966000
                         },
-                        "changed": true
+                        "changed": false
                     },
                     "editorType": "ace",
                     "active": false

@@ -9,3 +9,8 @@ if [[ ! -d "`pwd`/target" ]]; then
 fi
 
 docker build -t speech2text .
+
+if [[ "${@/-p/}" != "$@" ]]; then
+	docker tag speech2text bodom0015/speech2text
+	docker push bodom0015/speech2text
+fi

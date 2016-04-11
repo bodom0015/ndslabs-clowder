@@ -6,9 +6,13 @@ MAINTAINER Marcus Slavenas <slavenas@illinois.edu>
 # Copy built JAR(s) into image
 COPY target/speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar config.properties /workspace/
 
+# Set container workdir
 WORKDIR /workspace
 
-# command to run when starting docker
+# Install ffmpeg
+RUN apk add --update ffmpeg && unzip -d / speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+# Command to run when starting docker
 CMD [ "java", "-jar", "speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar" ]
 
 # Setup environment variables. These are passed into the container. You can change
