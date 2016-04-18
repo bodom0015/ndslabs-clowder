@@ -107,13 +107,8 @@ public class ExtractText {
         }
     	
     	rabbitmqUri = props.getProperty("rabbitmqUri");
-    	//rabbitmqHost = props.getProperty("rabbitmqHost");
     	exchange = props.getProperty("exchange");
     	extractorName = props.getProperty("extractorName");
-    	//username = props.getProperty("rabbitmqUsername");
-    	//if(username.equals("null")){username=null;}
-    	//password = props.getProperty("rabbitmqPassword");
-    	//if(password.equals("null")){password=null;}
     	messageType = props.getProperty("messageType");
     	
     	// Strip out the URI into its various pieces

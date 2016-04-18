@@ -1,5 +1,3 @@
-# FROM clowder/python-base
-# FROM maven:3-onbuild
 FROM java:8-jre-alpine
 MAINTAINER Marcus Slavenas <slavenas@illinois.edu>
 

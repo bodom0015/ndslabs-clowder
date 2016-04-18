@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd $EXTRACTOR_HOME
 # If RabbitMQ URI is not set, use the default credentials; while doing so,
 # handle the linking scenario, where RABBITMQ_PORT_5672 is set.
 if [ "$RABBITMQ_URI" == "" ]; then
@@ -9,6 +10,15 @@ if [ "$RABBITMQ_URI" == "" ]; then
         RABBITMQ_URI="amqp://guest:guest@localhost:5672/%2F"
     fi
 fi
+
+# If a branch name is given, switch to it.
+if [ -n "$EXTR_BRANCH" ]; then
+    git fetch
+    git checkout $EXTR_BRANCH
+fi
+
+# update extractor code everytime we build
+git pull
 
 # Set plantcv env var
 /bin/sed -i -e "s#exRootPath =.*#exRootPath = '${CLOWDER_HOME}/extractors-plantcv'#" config.py
@@ -25,5 +35,4 @@ do
 done
 
 # start the extractor service
-#source ${CLOWDER_HOME}/pyenv/bin/activate && ./ex-plantcv.py
-./ex-plantcv.py
+source ${CLOWDER_HOME}/pyenv/bin/activate && ./ex-plantcv.py

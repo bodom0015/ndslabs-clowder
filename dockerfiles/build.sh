@@ -18,7 +18,8 @@ for i in "${IMAGES[@]}"; do
 done
 
 for i in "${EXTRACTORS[@]}"; do
-	docker build -t ndslabs/$i:${TAG} extractors/$i
+	# Use the build script, if one is provided, or perform a raw docker build
+	sh extractors/$i/build.sh || docker build -t ndslabs/$i:${TAG} extractors/$i
 done
 
 # Temporary hack to get this image working

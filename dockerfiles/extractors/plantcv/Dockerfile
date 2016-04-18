@@ -1,76 +1,70 @@
-FROM ncsa/clowder-extractors-python-base
+FROM ncsa/clowder-python-base
 MAINTAINER Yan Y. Liu <yanliu@illinois.edu>
 
 #TODO: change extractor home to plantcv after code merge
 ENV CLOWDER_HOME=/home/clowder \
-    EXTRACTOR_HOME=${CLOWDER_HOME}/extractors-plantcv/plantcv \
+    EXTRACTOR_HOME=/home/clowder/extractors-plantcv/plantcv \
     RABBITMQ_URI="" \
-    RABBITMQ_EXCHANGE="clowder" \
-    PYTHONPATH="${CLOWDER_HOME}/opencv/lib/python2.7/dist-packages:${CLOWDER_HOME}/plantcv/lib:/usr/lib/python2.7/dist-packages:${PYTHONPATH}" \
-    PATH="${CLOWDER_HOME}/opencv/bin:${PATH}" \
-    LD_LIBRARY_PATH="${CLOWDER_HOME}/opencv/lib:${LD_LIBRARY_PATH}"
-
-USER root
+    RABBITMQ_EXCHANGE="clowder"
 
 ### plantcv part: start
-# Install prerequisites
-RUN apt-get -qq update && \
-    apt-get -qq install \
-      wget \
-      git \
-      imagemagick \
-      build-essential \
-      unzip \
-      cmake \
-      libgtk2.0-dev \
-      python-dev \
-      python-numpy \
-      python-gtk2 \
-      python-matplotlib \
-      libavcodec-dev \
-      libavformat-dev \
-      libswscale-dev \
-      libdc1394-22 \
-      libjpeg-dev \
-      libpng-dev \
-      libjasper-dev \
-      libtiff-dev \
-      libtbb-dev \
-      sqlite3 \
-      python-opencv \
-      opencv-data && \
-    pip install wheel matplotlib && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-ENV CLOWDER_HOME=/home/clowder
-
-# Install opencv from source
-RUN cd ${CLOWDER_HOME} && \
-    mkdir software && \
-    git clone -q --depth=1 --single-branch --branch 2.4.8 https://github.com/Itseez/opencv.git software/opencv && \
-    mkdir -p software/opencv/build && \
-    cd software/opencv/build && \
-    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${CLOWDER_HOME}/opencv -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON .. && \
-    make -j8 && \
-    make install && \
-    cd ${CLOWDER_HOME} && \
-    rm -rf software/opencv /tmp/* /var/tmp/*
+# Install common utils
+USER root
+RUN apt-get update
+RUN apt-get install -y -q wget git imagemagick
+# install plantcv dependencies
+RUN apt-get install -y -q build-essential unzip cmake libgtk2.0-dev python-dev python-numpy python-gtk2 python-matplotlib libavcodec-dev libavformat-dev libswscale-dev libdc1394-22 libjpeg-dev libpng-dev libjasper-dev libtiff-dev libtbb-dev sqlite3
 
 USER clowder
-
-# Clone necessary source respoitories
+RUN cd ${CLOWDER_HOME} && mkdir software
+# install opencv from source with python support, plantcv
+RUN cd ${CLOWDER_HOME}/software && \
+    git clone -q https://github.com/Itseez/opencv.git && \
+    cd opencv && git checkout -q 2.4.8 && \
+    mkdir build && cd build && \
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${CLOWDER_HOME}/opencv -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON .. && \
+    make && make install && \
+    cd ${CLOWDER_HOME}/software && rm -fr opencv
+# install plantcv    
+RUN cd ${CLOWDER_HOME} && \
+    git clone https://github.com/danforthcenter/plantcv.git
+# set env
+ENV PYTHONPATH="${CLOWDER_HOME}/opencv/lib/python2.7/dist-packages:${CLOWDER_HOME}/plantcv/lib:/usr/lib/python2.7/dist-packages:${PYTHONPATH}"
+ENV PATH="${CLOWDER_HOME}/opencv/bin:${PATH}"
+ENV LD_LIBRARY_PATH="${CLOWDER_HOME}/opencv/lib:${LD_LIBRARY_PATH}"
+# Prepare output dir and test data
 RUN cd ${CLOWDER_HOME} && \
     mkdir -p plantcv-output && \
-    git clone -q --depth=1 --single-branch https://github.com/danforthcenter/plantcv.git && \
-    git clone -q --depth=1 --single-branch https://opensource.ncsa.illinois.edu/bitbucket/scm/cats/extractors-plantcv.git && \
-    rm -rf plantcv/.git extractors-plantcv/.git /tmp/* /var/tmp/*
+    mkdir -p data/Lemnatec-Indoor && \
+    cd data/Lemnatec-Indoor && \
+    wget http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/NIR_SV_90_z2500_338998.jpg && \
+    wget http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/VIS_SV_180_z700_379476.jpg && \
+    wget http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/VIS_TV_z3000_329934.jpg
+### plantcv part: end
 
-# Add some sample test data
-ADD http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/NIR_SV_90_z2500_338998.jpg http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/VIS_SV_180_z700_379476.jpg http://datastore2.cigi.illinois.edu:8008/webdata/arpae/Lemnatec-Indoor/VIS_TV_z3000_329934.jpg ${CLOWDER_HOME}/data/Lemnatec-Indoor/
+# Install the requied software.
+USER root
+RUN apt-get install -y python-opencv opencv-data && \
+    yes | pip install virtualenv 
+RUN chsh -s /bin/bash clowder
 
-# Copy the source and execute the helper script
-COPY . ${EXTRACTOR_HOME}/
+# Get git source, fix the default paths.
+USER clowder
+RUN cd ${CLOWDER_HOME} && \
+    git clone https://opensource.ncsa.illinois.edu/bitbucket/scm/cats/extractors-plantcv.git && \
+    virtualenv pyenv && \
+    . pyenv/bin/activate && \
+    pip install pika requests wheel matplotlib && \
+    pip install git+https://opensource.ncsa.illinois.edu/stash/scm/cats/pyclowder.git && \
+    deactivate 
+
+USER root
+# Copy the helper script.
+COPY start.sh ${EXTRACTOR_HOME}/
+RUN chown clowder ${EXTRACTOR_HOME}/start.sh && \
+    chmod 755 ${EXTRACTOR_HOME}/start.sh
+
+USER clowder
 WORKDIR ${EXTRACTOR_HOME}
 CMD ["./start.sh"]
 
