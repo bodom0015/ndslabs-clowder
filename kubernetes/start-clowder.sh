@@ -1,12 +1,16 @@
 #!/bin/bash
 # 
-# Usage: ./start-clowder.sh [plugin1] [plugin2] [plugin3]
+# Usage: ./start-clowder.sh [plugin1] [plugin2] [plugin3] ...
 # 
 # Valid plugins:
 #     elasticsearch
+#     audio-preview
 #     image-preview
 #     video-preview
+#     pdf-preview
+#     image-metadata
 #     plantcv
+#     speech2text
 # 
 # Exit on error?
 # set -e
@@ -56,8 +60,8 @@ echo "Starting MongoDB..."
 start_rc_wait "mongo" "controllers/mongo-rc.yaml"
 
 REQ_ES="elasticsearch"
-REQ_RABBITMQ=(plantcv image-preview video-preview)
-OPTIONAL_PLUGINS=(plantcv image-preview video-preview elasticsearch)
+REQ_RABBITMQ=(plantcv speech2text image-metadata audio-preview pdf-preview image-preview video-preview)
+OPTIONAL_PLUGINS=(plantcv speech2text image-metadata audio-preview pdf-preview image-preview video-preview elasticsearch)
 
 # Check for optional plugin with no dependencies (elasticsearch)
 if [[ "${@/#$REQ_ES/ }" != "$@" ]] ; then

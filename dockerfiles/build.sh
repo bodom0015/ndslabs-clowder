@@ -1,14 +1,14 @@
 #!/bin/sh
 #
-# Usage ./build.sh <tagName>
+# Usage ./build.sh <tagName> [-p]
 #
 # Latest stable tag: 0.9.2
 
 IMAGES=(clowder toolserver)
-EXTRACTORS=(image/preview video-preview plantcv image/metadata audio/preview audio/speech2text pdf-preview)
+EXTRACTORS=(image-preview video-preview plantcv image-metadata audio-preview speech2text pdf-preview)
 
 TAG=$1
-if [[ "$1" == "" ]]; then
+if [[ "$1" == "" || "$1" == "-p" ]]; then
 	TAG=latest
 fi
 
@@ -19,18 +19,21 @@ done
 
 for i in "${EXTRACTORS[@]}"; do
 	# Use the build script, if one is provided, or perform a raw docker build
-	sh extractors/$i/build.sh || docker build -t ndslabs/$i:${TAG} extractors/$i
+	if [[ "$i" == "speech2text" ]]; then
+		cd extractors/speech2text/
+		sudo sh build.sh
+		cd ../..
+	else
+		docker build -t ndslabs/$i:${TAG} extractors/$i
+	fi
 done
 
-# Temporary hack to get this image working
-docker tag ndslabs/toolserver:${TAG} ncsa/clowder-toolserver:latest
-
-if [[ "${@/-p/}" != "$@" ]]; then
+if [[ "${@/-p/ }" != "$@" ]]; then
 	for i in "${IMAGES[@]}"; do
-		echo docker push ndslabs/$i:${TAG}
+		docker push ndslabs/$i:${TAG}
 	done
 
 	for i in "${EXTRACTORS[@]}"; do
-		echo docker push ndslabs/$i:${TAG}
+		docker push ndslabs/$i:${TAG}
 	done
 fi

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: image-metadata
+  labels:
+    name: image-metadata
+spec:
+  replicas: 1
+  selector:
+    name: image-metadata
+  template:
+    metadata:
+      labels:
+        name: image-metadata
+    spec:
+      containers:
+      - name: imagemetadata
+        image: ndslabs/image-metadata:0.9.2
+        env:
+        - name: RABBITMQ_EXCHANGE
+          value: "clowder"
+        - name: RABBITMQ_VHOST
+          value: "%2F"
+        - name: RABBITMQ_QUEUE
+          value: "ncsa.image.metadata"
