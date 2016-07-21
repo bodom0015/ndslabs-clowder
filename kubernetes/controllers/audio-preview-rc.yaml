@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: audio-preview
+  labels:
+    name: audio-preview
+spec:
+  replicas: 1
+  selector:
+    name: audio-preview
+  template:
+    metadata:
+      labels:
+        name: audio-preview
+    spec:
+      containers:
+      - name: audio-preview
+        image: ndslabs/audio-preview:0.9.2
+        env:
+        - name: RABBITMQ_EXCHANGE
+          value: "clowder"
+        - name: RABBITMQ_VHOST
+          value: "%2F"
+        - name: RABBITMQ_QUEUE
+          value: "ncsa.audio.preview"

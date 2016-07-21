@@ -32,9 +32,13 @@ Running the start script will bring up clowder. Be sure to give it a space-separ
 
 Accepted plugin values can be found below:
 * elasticsearch
+* speech2text
 * plantcv
+* image-metadata
+* audio-preview
 * image-preview
 * video-preview
+* pdf-preview
 
 NOTE: Specifying one or more extractors automatically starts RabbitMQ. Otherwise, RabbitMQ will not be started.
 

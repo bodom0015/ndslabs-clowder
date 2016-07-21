@@ -1,4 +1,4 @@
-FROM ncsa/clowder-python-base:2.1
+FROM ncsa/clowder-python-base
 MAINTAINER Yan Y. Liu <yanliu@illinois.edu>
 
 #TODO: change extractor home to plantcv after code merge
@@ -10,53 +10,28 @@ ENV CLOWDER_HOME=/home/clowder \
 ### plantcv part: start
 # Install common utils
 USER root
-RUN apt-get update && \
-    apt-get install -y -q \
-      wget \
-      git \
-      imagemagick \
-      build-essential \
-      unzip \
-      cmake \
-      libgtk2.0-dev \
-      python-dev \
-      python-numpy \
-      python-gtk2 \
-      python-matplotlib \
-      libavcodec-dev \
-      libavformat-dev \
-      libswscale-dev \
-      libdc1394-22 \
-      libjpeg-dev \
-      libpng-dev \
-      libjasper-dev \
-      libtiff-dev \
-      libtbb-dev \
-      sqlite3
+RUN apt-get update
+RUN apt-get install -y -q wget git imagemagick
+# install plantcv dependencies
+RUN apt-get install -y -q build-essential unzip cmake libgtk2.0-dev python-dev python-numpy python-gtk2 python-matplotlib libavcodec-dev libavformat-dev libswscale-dev libdc1394-22 libjpeg-dev libpng-dev libjasper-dev libtiff-dev libtbb-dev sqlite3
 
 USER clowder
-
+RUN cd ${CLOWDER_HOME} && mkdir software
 # install opencv from source with python support, plantcv
-RUN mkdir -p ${CLOWDER_HOME}/software && \
-    cd ${CLOWDER_HOME}/software && \
+RUN cd ${CLOWDER_HOME}/software && \
     git clone -q https://github.com/Itseez/opencv.git && \
-    cd opencv && \
-    git checkout -q 2.4.8 && \
-    mkdir build && \
-    cd build && \
+    cd opencv && git checkout -q 2.4.8 && \
+    mkdir build && cd build && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${CLOWDER_HOME}/opencv -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON .. && \
-    make && \
-    make install && \
-    cd ${CLOWDER_HOME}/software && \
-    rm -fr opencv && \
-    cd ${CLOWDER_HOME} && \
+    make && make install && \
+    cd ${CLOWDER_HOME}/software && rm -fr opencv
+# install plantcv    
+RUN cd ${CLOWDER_HOME} && \
     git clone https://github.com/danforthcenter/plantcv.git
-
-# set environment variables
-ENV PYTHONPATH="${CLOWDER_HOME}/opencv/lib/python2.7/dist-packages:${CLOWDER_HOME}/plantcv/lib:/usr/lib/python2.7/dist-packages:${PYTHONPATH}" \
-    PATH="${CLOWDER_HOME}/opencv/bin:${PATH}" \
-    LD_LIBRARY_PATH="${CLOWDER_HOME}/opencv/lib:${LD_LIBRARY_PATH}"
-
+# set env
+ENV PYTHONPATH="${CLOWDER_HOME}/opencv/lib/python2.7/dist-packages:${CLOWDER_HOME}/plantcv/lib:/usr/lib/python2.7/dist-packages:${PYTHONPATH}"
+ENV PATH="${CLOWDER_HOME}/opencv/bin:${PATH}"
+ENV LD_LIBRARY_PATH="${CLOWDER_HOME}/opencv/lib:${LD_LIBRARY_PATH}"
 # Prepare output dir and test data
 RUN cd ${CLOWDER_HOME} && \
     mkdir -p plantcv-output && \
@@ -85,7 +60,7 @@ RUN cd ${CLOWDER_HOME} && \
 
 USER root
 # Copy the helper script.
-COPY FILES.plantcv/ ${EXTRACTOR_HOME}/
+COPY start.sh ${EXTRACTOR_HOME}/
 RUN chown clowder ${EXTRACTOR_HOME}/start.sh && \
     chmod 755 ${EXTRACTOR_HOME}/start.sh
 
