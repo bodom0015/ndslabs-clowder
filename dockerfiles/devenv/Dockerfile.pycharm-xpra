@@ -1,0 +1,4 @@
+FROM ndslabs/pycharm-xpra
+
+RUN pip install pika && \
+    pip install requests
