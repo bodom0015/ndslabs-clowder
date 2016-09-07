@@ -1,17 +1,18 @@
-FROM java:8-jre-alpine
+FROM maven:3.3.9-jdk-8-alpine
 MAINTAINER Marcus Slavenas <slavenas@illinois.edu>
 
 # Copy built JAR(s) into image
-COPY target/speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar config.properties /workspace/
+COPY . /workspace/
 
 # Set container workdir
 WORKDIR /workspace
 
 # Install ffmpeg
-RUN apk add --update ffmpeg && unzip -d / speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar
+RUN apk add --update ffmpeg 
+#&& unzip -d / speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 # Command to run when starting docker
-CMD [ "java", "-jar", "speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar" ]
+CMD [ "java", "-jar", "target/speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar" ]
 
 # Setup environment variables. These are passed into the container. You can change
 # these to your setup. If RABBITMQ_URI is not set, it will try and use the rabbitmq
