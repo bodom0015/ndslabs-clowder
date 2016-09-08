@@ -8,8 +8,10 @@ COPY . /workspace/
 WORKDIR /workspace
 
 # Install ffmpeg
-RUN apk add --update ffmpeg 
-#&& unzip -d / speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar
+RUN apk add --update ffmpeg
+
+# Build speech2text with Maven
+RUN mvn package
 
 # Command to run when starting docker
 CMD [ "java", "-jar", "target/speech2text-1.0-SNAPSHOT-jar-with-dependencies.jar" ]
