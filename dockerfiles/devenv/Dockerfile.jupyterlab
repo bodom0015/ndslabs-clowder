@@ -1,0 +1,9 @@
+FROM ndslabs/jupyterlab
+
+USER root
+
+RUN apt-get update -y && apt-get install -y python-pip unzip &&  \
+    pip install pika && \
+    pip install requests
+
+USER jovyan
