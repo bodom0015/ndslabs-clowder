@@ -1,0 +1,14 @@
+FROM ndslabs/cloud9-base:latest
+
+RUN apt-get -qq update && \
+    apt-get -qq install --no-install-recommends \
+      python-pip \
+      python3-pip \
+      unzip \
+      vim && \
+    apt-get -y clean all && \
+    pip install requests &&\ 
+    pip install tika && \
+    rm -rf /var/lib/apt/lists/* /tmp/* 
+
+CMD ["nodejs", "/cloud9/server.js", "-l", "0.0.0.0", "-p", "80", "-w", "/workspace", "--auth", "terra:pyclowder"]
